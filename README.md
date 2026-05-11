@@ -1,5 +1,7 @@
 # [Flask Datta Able](https://app-generator.dev/product/datta-able/flask/)
 
+> **⚠️ Note :** Ceci est un projet personnel modifié incluant l'intégration de paiements Stripe et une configuration MySQL. Il est basé sur le projet open-source original décrit ci-dessous.
+
 **Open-source Flask Starter** crafted on top of **[Datta Able](https://app-generator.dev/product/datta-able/)**, an open-source `Bootstrap` UI Kit released by [CodedThemes](https://app-generator.dev/agency/codedthemes/).
 The product is designed to deliver the best possible user experience with highly customizable feature-rich pages. 
 

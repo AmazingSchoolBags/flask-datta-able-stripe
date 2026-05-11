@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Paiement réussi{% endblock title %}
+
+{% block extrastyle %}
+<style>
+  .success-container {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .success-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+  }
+  .success-icon svg {
+    width: 48px;
+    height: 48px;
+    color: #fff;
+    stroke-width: 3;
+  }
+  @keyframes pop-in {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+  .success-container h2 {
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+    font-size: 1.8rem;
+  }
+  .success-container p {
+    color: #6b7280;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .success-amount {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #6366f1;
+    margin: 20px 0;
+  }
+  .confetti {
+    font-size: 3rem;
+    animation: confetti-bounce 1s ease-in-out infinite alternate;
+  }
+  @keyframes confetti-bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-8px); }
+  }
+  .btn-back {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 24px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+  }
+  .btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    color: #fff;
+  }
+</style>
+{% endblock extrastyle %}
+
+{% block content %}
+
+  <div class="pc-container">
+    <div class="pc-content">
+      <div class="success-container">
+        <div class="confetti">🎉</div>
+        <div class="success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+        <h2>Merci pour votre soutien !</h2>
+        <p>Votre paiement a été traité avec succès.</p>
+        {% if session_data %}
+          <div class="success-amount">{{ "%.2f"|format(session_data.amount_total / 100) }} {{ session_data.currency|upper }}</div>
+        {% endif %}
+        <p>Votre générosité nous aide à continuer à améliorer l'application. 💜</p>
+        <a href="{{ url_for('home_blueprint.index') }}" class="btn-back">
+          Retour au Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

@@ -12,14 +12,10 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY env.sample .env
-
 COPY . .
 
-# Init migration folder
-# RUN flask db init # to be executed only once
-RUN flask db migrate
-RUN flask db upgrade
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
 
-# gunicorn
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "run:app"]
+# Use entrypoint script to wait for DB and run migrations at startup
+CMD ["./entrypoint.sh"]

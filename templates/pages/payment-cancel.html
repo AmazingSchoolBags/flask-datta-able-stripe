@@ -1,0 +1,81 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Paiement annulé{% endblock title %}
+
+{% block extrastyle %}
+<style>
+  .cancel-container {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .cancel-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+  }
+  .cancel-icon svg {
+    width: 48px;
+    height: 48px;
+    color: #fff;
+    stroke-width: 3;
+  }
+  .cancel-container h2 {
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 12px;
+    font-size: 1.8rem;
+  }
+  .cancel-container p {
+    color: #6b7280;
+    font-size: 1.05rem;
+  }
+  .btn-retry {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 24px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+  }
+  .btn-retry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    color: #fff;
+  }
+</style>
+{% endblock extrastyle %}
+
+{% block content %}
+
+  <div class="pc-container">
+    <div class="pc-content">
+      <div class="cancel-container">
+        <div style="font-size: 3rem; margin-bottom: 10px;">😔</div>
+        <div class="cancel-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <h2>Paiement annulé</h2>
+        <p>Pas de souci ! Vous pouvez réessayer quand vous le souhaitez.</p>
+        <a href="{{ url_for('payments_blueprint.support') }}" class="btn-retry">
+          ← Réessayer
+        </a>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

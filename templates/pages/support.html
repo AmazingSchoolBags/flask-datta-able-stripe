@@ -1,0 +1,385 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Soutenir l'App{% endblock title %}
+
+{% block extrastyle %}
+<style>
+  .support-hero {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    border-radius: 16px;
+    padding: 48px 32px;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .support-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+  .support-hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .support-hero p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 550px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .donation-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .donation-card:hover {
+    border-color: #8b5cf6;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
+  }
+  .donation-card.selected {
+    border-color: #8b5cf6;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.25);
+  }
+  .donation-card .emoji {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .donation-card .amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #6366f1;
+    margin-bottom: 4px;
+  }
+  .donation-card .desc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  .donation-card .check-mark {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #8b5cf6;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .donation-card.selected .check-mark {
+    display: flex;
+  }
+
+  .custom-amount-wrapper {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 16px;
+    border: 2px dashed #d1d5db;
+    transition: all 0.3s;
+  }
+  .custom-amount-wrapper:focus-within {
+    border-color: #8b5cf6;
+    background: #faf5ff;
+  }
+  .custom-amount-wrapper label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 10px;
+    display: block;
+    font-size: 1rem;
+  }
+  .custom-amount-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .custom-amount-input input {
+    font-size: 1.4rem;
+    font-weight: 700;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    padding: 10px 16px;
+    width: 140px;
+    text-align: center;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+  .custom-amount-input input:focus {
+    border-color: #8b5cf6;
+  }
+  .custom-amount-input .currency {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #6b7280;
+  }
+
+  .btn-donate {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 16px 48px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  }
+  .btn-donate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff;
+  }
+  .btn-donate:active {
+    transform: translateY(0);
+  }
+  .btn-donate svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    color: #9ca3af;
+    font-size: 0.85rem;
+  }
+  .secure-badge i {
+    color: #22c55e;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 20px 28px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    min-width: 140px;
+  }
+  .stat-item .stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #6366f1;
+  }
+  .stat-item .stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  .flash-messages {
+    margin-bottom: 20px;
+  }
+</style>
+{% endblock extrastyle %}
+
+{% block content %}
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+      <!-- [ breadcrumb ] start -->
+      <div class="page-header">
+        <div class="page-block">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <div class="page-header-title">
+                <h5 class="mb-0">Soutenir l'App</h5>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <ul class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.index') }}">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page">Soutenir</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- [ breadcrumb ] end -->
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Hero section -->
+      <div class="support-hero">
+        <h1>💜 Soutenez Datta Able</h1>
+        <p>Votre contribution nous aide à continuer le développement, corriger les bugs et ajouter de nouvelles fonctionnalités. Chaque don compte !</p>
+      </div>
+
+      <!-- Donation form -->
+      <form id="donation-form" action="{{ url_for('payments_blueprint.create_checkout_session') }}" method="POST">
+        <div class="row g-3 justify-content-center">
+          {% for item in donation_amounts %}
+          <div class="col-6 col-md-3">
+            <div class="donation-card" data-amount="{{ item.value }}" onclick="selectAmount(this, {{ item.value }})">
+              <div class="check-mark">✓</div>
+              <span class="emoji">{{ item.description.split(' ')[-1] }}</span>
+              <div class="amount">{{ item.label }}</div>
+              <div class="desc">{{ item.description }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Custom amount -->
+        <div class="custom-amount-wrapper">
+          <label>💡 Ou choisissez un montant personnalisé :</label>
+          <div class="custom-amount-input">
+            <input type="number" id="custom-amount" min="1" max="9999" placeholder="15" oninput="selectCustom()">
+            <span class="currency">€</span>
+          </div>
+        </div>
+
+        <input type="hidden" name="amount" id="selected-amount" value="1000">
+
+        <div class="text-center">
+          <button type="submit" class="btn-donate" id="donate-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+            Donner 10 €
+          </button>
+
+          <div class="secure-badge">
+            <i data-feather="lock" style="width:14px;height:14px;"></i>
+            Paiement sécurisé par Stripe
+          </div>
+        </div>
+      </form>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value">🔒</div>
+          <div class="stat-label">Paiement 100% sécurisé</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">⚡</div>
+          <div class="stat-label">Transaction instantanée</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">🌍</div>
+          <div class="stat-label">Toutes les cartes acceptées</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  let selectedCard = null;
+
+  function selectAmount(card, amount) {
+    // Clear custom input
+    document.getElementById('custom-amount').value = '';
+
+    // Remove selected from all cards
+    document.querySelectorAll('.donation-card').forEach(c => c.classList.remove('selected'));
+
+    // Select this card
+    card.classList.add('selected');
+    selectedCard = card;
+
+    // Update hidden input
+    document.getElementById('selected-amount').value = amount;
+
+    // Update button label
+    const euros = (amount / 100).toFixed(0);
+    document.getElementById('donate-btn').innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:20px;height:20px;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+      </svg>
+      Donner ${euros} €
+    `;
+  }
+
+  function selectCustom() {
+    const input = document.getElementById('custom-amount');
+    const val = parseInt(input.value);
+
+    // Deselect preset cards
+    document.querySelectorAll('.donation-card').forEach(c => c.classList.remove('selected'));
+    selectedCard = null;
+
+    if (val && val > 0) {
+      const amountCents = val * 100;
+      document.getElementById('selected-amount').value = amountCents;
+      document.getElementById('donate-btn').innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:20px;height:20px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+        Donner ${val} €
+      `;
+    }
+  }
+
+  // Pre-select 10€ by default
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.donation-card');
+    if (cards.length > 1) {
+      selectAmount(cards[1], 1000);
+    }
+  });
+</script>
+{% endblock extra_js %}

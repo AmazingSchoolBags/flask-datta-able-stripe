@@ -1,12 +1,46 @@
 version: '3.8'
 services:
+  db:
+    container_name: appseed_db
+    restart: always
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: appseed_db
+      MYSQL_USER: appseed_db_usr
+      MYSQL_PASSWORD: S3cure_Pass!
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - db_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass123"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   appseed-app:
     container_name: appseed_app
     restart: always
     build: .
+    environment:
+      DB_ENGINE: mysql+pymysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: appseed_db
+      DB_USERNAME: appseed_db_usr
+      DB_PASS: S3cure_Pass!
+      STRIPE_PUBLIC_KEY: pk_test_51Sx2DTHdJTfC3Zje28LftvFUp7QxfLe1pmikwtPCp3sT5jcZVvBdGGu45eZilG5URnualrmHNB24DKqnlkZwWToJ0028obaQfY
+      STRIPE_SECRET_KEY: sk_test_51Sx2DTHdJTfC3Zjeh7nKuSTP0mdQn5WndLcPpMennCpIAEaMHQKNDoD1Icvt7pyc8AvmacmaGqrhscAmb6A188nL00TJH62Xxk
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - db_network
       - web_network
+
   nginx:
     container_name: nginx
     restart: always
@@ -17,11 +51,15 @@ services:
       - ./nginx:/etc/nginx/conf.d
     networks:
       - web_network
-    depends_on: 
+    depends_on:
       - appseed-app
+
 networks:
   db_network:
     driver: bridge
   web_network:
     driver: bridge
- 
+
+volumes:
+  mysql_data:
+    driver: local
